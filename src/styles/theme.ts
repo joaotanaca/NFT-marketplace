@@ -8,8 +8,7 @@ const light = {
     lightText: "#333333",
     text: "#0000",
     backgroundModal: "#DBF0EF",
-    backgroundContainer: "#FCFCFC",
-    backgroundBody: "#FFFFFF",
+    background: "#FCFCFC",
 };
 
 const dark = {
@@ -22,8 +21,7 @@ const dark = {
     lightText: "#FFF",
     text: "#FFF",
     backgroundModal: "#272727",
-    backgroundContainer: "#000000",
-    backgroundBody: "#000000",
+    background: "#000000",
 };
 
 const theme = {
