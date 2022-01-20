@@ -1,4 +1,4 @@
-import GlobalProvider from "components/atoms/GlobalProvider";
+import Template from "components/organisms/Template";
 import { ThemeProvider } from "context/theme";
 import type { AppProps } from "next/app";
 import "../styles/tailwind.css";
@@ -6,9 +6,9 @@ import "../styles/tailwind.css";
 function MyApp({ Component, pageProps }: AppProps) {
     return (
         <ThemeProvider>
-            <GlobalProvider>
+            <Template>
                 <Component {...pageProps} />
-            </GlobalProvider>
+            </Template>
         </ThemeProvider>
     );
 }
