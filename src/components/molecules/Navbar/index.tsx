@@ -15,24 +15,29 @@ const Navbar: React.FC = () => {
     const toogleValue = useMemo(() => theme === "dark", [theme]);
     return (
         <Container>
-            <div>
-                <div className="flex items-center gap-1">
-                    <Icon
-                        name="leaf"
-                        color={
-                            theme === "light"
-                                ? themeStyled.purple
-                                : themeStyled.white
-                        }
-                        size={14}
-                    />
-                    <Text
-                        className="text-base font-medium"
-                        color={theme === "light" ? "purple" : "white"}
-                    >
-                        Fake Market
-                    </Text>
-                </div>
+            <div className="flex items-center gap-1 h-full">
+                <Icon
+                    name="leaf"
+                    color={
+                        theme === "light"
+                            ? themeStyled.purple
+                            : themeStyled.white
+                    }
+                    size={14}
+                />
+                <Text
+                    className="text-base font-medium"
+                    color={theme === "light" ? "purple" : "white"}
+                >
+                    Fake Market
+                </Text>
+                <Text
+                    className="flex items-center font-medium text-base ml-20 h-full relative menu-item active"
+                    color="lightText"
+                    
+                >
+                    Dashboard
+                </Text>
             </div>
             <div className="flex items-center gap-5">
                 <Toogle onClick={handleTheme} value={toogleValue} />
