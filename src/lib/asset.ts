@@ -74,6 +74,7 @@ export type AssetResponse = {
         difficulty: number;
     };
     name: string;
+    price: number;
 };
 
 export const getAssetCardsUrl =

@@ -1,15 +1,23 @@
 import { Icon, Input, Text, Toogle } from "components/atoms";
+import { useAssets } from "context/assets";
 import { useTheme } from "context/theme";
 import Image from "next/image";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTheme as useThemeStyled } from "styled-components";
 
 import { Container } from "./styles";
 
 const Navbar: React.FC = () => {
     const { handleTheme, theme } = useTheme();
+    const { handleFilters } = useAssets();
     const themeStyled = useThemeStyled();
     const toogleValue = useMemo(() => theme === "dark", [theme]);
+    const handleSearch = useCallback(
+        (event: React.FormEvent<HTMLInputElement>) => {
+            handleFilters?.(event.currentTarget.value);
+        },
+        [handleFilters],
+    );
     return (
         <Container>
             <div className="flex items-center gap-1 h-full">
@@ -38,6 +46,7 @@ const Navbar: React.FC = () => {
             <div className="flex items-center gap-5">
                 <Toogle onClick={handleTheme} value={toogleValue} />
                 <Input
+                    onChange={handleSearch}
                     icon={
                         <Icon
                             name="search"

@@ -7,12 +7,14 @@ import type { NextPage } from "next";
 import { useMemo } from "react";
 import { useTheme as useThemeStyled } from "styled-components";
 import Head from "next/head";
+import { useAssets } from "context/assets";
 
 const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
+    const { search } = useAssets();
     const { data } = useFetch<{ data: AssetResponse[] }>(
         getAssetCardsUrl,
         {
-            params: { limit: 12 },
+            params: { limit: 10, page: 1 },
         },
         cards,
     );
@@ -23,6 +25,12 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
         [theme, themeStyled.purple, themeStyled.white],
     );
 
+    const assets = useMemo(() => {
+        return data?.data?.map((asset) => ({
+            ...asset,
+            price: Math.random().toPrecision(3),
+        }));
+    }, [data]) as unknown as AssetResponse[];
     return (
         <>
             <Head>
@@ -37,7 +45,7 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                         <Icon name="grid" color={sortButtonColor} size={13.5} />
                     </button>
                 </div>
-                <Cards cards={data?.data} />
+                <Cards cards={assets} />
             </div>
         </>
     );

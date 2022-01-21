@@ -11,8 +11,7 @@ type PropsT = HTMLAttributes<HTMLDivElement> & {
 };
 
 const Card: React.FC<PropsT> = ({ className, onClick, data, ...props }) => {
-    const value = useMemo(() => Math.random().toPrecision(3), []);
-    const { img, name, rarity } = data.template.immutable_data;
+    const { img, name } = data.template.immutable_data;
     return (
         <Container
             className={`${className} rounded-b-2xl p-5 relative`}
@@ -38,7 +37,7 @@ const Card: React.FC<PropsT> = ({ className, onClick, data, ...props }) => {
             <div className="card-bottom flex justify-between items-center pt-4">
                 <Text className="text-base font-normal">Fixed price</Text>
                 <Button buttonType="outline" onClick={onClick}>
-                    {value} WAX
+                    {data.price} WAX
                 </Button>
             </div>
         </Container>
