@@ -37,7 +37,7 @@ export default class MyDocument extends Document {
         return (
             <Html lang="pt-BR">
                 <Head>
-                    <link rel="shortcut icon" href="images/favicon.png" />
+                    <link rel="shortcut icon" href="favicon.png" />
                     <link
                         rel="preconnect"
                         href="https://fonts.googleapis.com"
