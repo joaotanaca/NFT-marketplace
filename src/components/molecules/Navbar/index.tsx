@@ -1,7 +1,4 @@
-import Icon from "components/atoms/Icon";
-import Input from "components/atoms/Input";
-import Text from "components/atoms/Text";
-import Toogle from "components/atoms/Toogle";
+import { Icon, Input, Text, Toogle } from "components/atoms";
 import { useTheme } from "context/theme";
 import Image from "next/image";
 import React, { useMemo } from "react";
@@ -34,7 +31,6 @@ const Navbar: React.FC = () => {
                 <Text
                     className="flex items-center font-medium text-base ml-20 h-full relative menu-item active"
                     color="lightText"
-                    
                 >
                     Dashboard
                 </Text>
