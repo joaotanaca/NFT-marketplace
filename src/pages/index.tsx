@@ -10,7 +10,7 @@ import Head from "next/head";
 import { useAssets } from "context/assets";
 
 const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
-    const { search } = useAssets();
+    const { collections } = useAssets();
     const { data } = useFetch<{ data: AssetResponse[] }>(
         getAssetCardsUrl,
         {
@@ -41,11 +41,16 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                     NFTs
                 </Text>
                 <div className="w-full mt-6 mb-4 flex-">
+                    <select>
+                        {collections.map((name) => (
+                            <option key={name}>{name}</option>
+                        ))}
+                    </select>
                     <button>
                         <Icon name="grid" color={sortButtonColor} size={13.5} />
                     </button>
                 </div>
-                <Cards cards={assets} />
+                <Cards cards={assets ?? cards} />
             </div>
         </>
     );

@@ -77,12 +77,13 @@ export type AssetResponse = {
     price: number;
 };
 
-export const getAssetCardsUrl =
-    "https://wax.api.atomicassets.io/atomicassets/v1/assets";
+export const base = "https://wax.api.atomicassets.io/atomicassets/v1/";
+
+export const getAssetCardsUrl = "assets";
 
 export async function getAssetCards(): Promise<AssetResponse[]> {
     let { data } = await fetch(
-        `${getAssetCardsUrl}?page=1&limit=12&order=desc&sort=asset_id`,
+        `${base}${getAssetCardsUrl}?page=1&limit=12&order=desc&sort=asset_id`,
     ).then((r) => r.json());
     return data as AssetResponse[];
 }
