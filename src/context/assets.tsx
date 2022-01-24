@@ -28,16 +28,18 @@ type Order = "asc" | "desc";
 
 type AssetsContextT = {
     collections: string[];
+    schemas: string[];
     filter: { [key: string]: any };
     assets?: AssetResponse[];
     search: string;
     order: Order;
     sort: Sort;
-    handleFilters?: React.Dispatch<React.SetStateAction<string>>;
+    handleFilters?: (filter: any) => void;
 };
 
 const AssetsContext = createContext({
     collections: [],
+    schemas: [],
     filter: null,
     assets: null,
     search: "",
@@ -57,54 +59,49 @@ export const AssetsProvider: React.FC = ({ children }) => {
     const { data } = useFetch<{ data: AssetResponse[] }>(
         getAssetCardsUrl,
         {
-            params: { limit: 10, page: 1 },
+            params: {
+                limit: 10,
+                page: 1,
+                collection_name: filter.collection_name,
+                schema_name: filter.schema_name,
+            },
         },
         {},
     );
 
     const {
         data: { data: collectionsResult },
+    } = useFetch("/collections", {}, []);
+
+    const {
+        data: { data: schemas },
     } = useFetch(
-        "/collections",
+        "/schemas",
         {
-            data: {
-                sort: "volume",
-                order: "desc",
-                symbol: "WAX",
-                after: "1642669200000",
-                collection_whitelist: collections.join(","),
-            },
+            params: { collection_name: filter.collection_name },
         },
         [],
-        "post",
     );
 
-    const getCollectionFilters = useCallback(async () => {
-        try {
-            const { data: filters } = await axios.get(
-                `https://wax.api.atomichub.io/v1/data/filters/${filter.collection_name}`,
-            );
-            const { data: schemas } = await axios.get(
-                `https://wax.api.atomichub.io/atomicmarket/v2/stats/schemas/${filter.collection_name}`,
-            );
-            const collection_filters: { [key: string]: any } = {};
-            const schemas_result: string[] = [];
+    // const getCollectionFilters = useCallback(async () => {
+    //     try {
+    //         const {
+    //             data: { data: filters },
+    //         } = await axios.get(
+    //             `https://wax.api.atomichub.io/v1/data/filters/${filter.collection_name}`,
+    //         );
 
-            filters.forEach(({ attribute, values }: Filters) => {
-                collection_filters[attribute] = values;
-            });
+    //         const collection_filters: { [key: string]: any } = {};
 
-            schemas.results.forEach(
-                ({ schema_name }: { schema_name: string }) => {
-                    schemas_result.push(schema_name);
-                },
-            );
+    //         filters?.forEach(({ attribute, values }: Filters) => {
+    //             collection_filters[attribute] = values;
+    //         });
 
-            handleFilters({ filter: collection_filters, schemas_result });
-        } catch (err) {
-            console.error(err);
-        }
-    }, [filter.collection_name]);
+    //         handleFilters({ filter: collection_filters });
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // }, [filter.collection_name]);
 
     const handleFilters = (filter: any) => {
         setFilter((prev: any) => ({ ...prev, ...filter }));
@@ -113,19 +110,26 @@ export const AssetsProvider: React.FC = ({ children }) => {
     const collectionsMap = useMemo(
         () =>
             collectionsResult?.map(
-                ({ collection_name: name_collection }: any) => name_collection,
+                ({ collection_name: name_collection }: any) =>
+                    name_collection || [],
             ),
         [collectionsResult],
     );
 
-    useEffect(() => {
-        if (filter.collection_name) getCollectionFilters();
-    }, [filter.collection_name, getCollectionFilters]);
+    const schemasMap = useMemo(
+        () => schemas?.map(({ schema_name }: any) => schema_name) || [],
+        [schemas],
+    );
+
+    // useEffect(() => {
+    //     if (filter.collection_name) getCollectionFilters();
+    // }, [filter.collection_name, getCollectionFilters]);
 
     return (
         <AssetsContext.Provider
             value={{
                 collections: collectionsMap,
+                schemas: schemasMap,
                 assets: data?.data,
                 filter,
                 search: "",

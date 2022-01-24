@@ -11,7 +11,7 @@ type PropsT = HTMLAttributes<HTMLDivElement> & {
 };
 
 const Card: React.FC<PropsT> = ({ className, onClick, data, ...props }) => {
-    const { img, name } = data.template.immutable_data;
+    const { img, name } = data.immutable_data;
     return (
         <Container
             className={`${className} rounded-b-2xl p-5 relative`}

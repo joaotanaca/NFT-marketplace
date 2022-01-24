@@ -31,24 +31,23 @@ export type AssetResponse = {
         is_transferable: boolean;
         is_burnable: boolean;
         issued_supply: string;
-        immutable_data: {
-            img: string;
-            ease: number;
-            luck: number;
-            name: string;
-            type: string;
-            delay: number;
-            shine: string;
-            cardid: number;
-            rarity: string;
-            backimg: string;
-            difficulty: number;
-        };
         created_at_time: string;
         created_at_block: string;
     };
     mutable_data: {};
-    immutable_data: {};
+    immutable_data: {
+        img: string;
+        ease: number;
+        luck: number;
+        name: string;
+        type: string;
+        delay: number;
+        shine: string;
+        cardid: number;
+        rarity: string;
+        backimg: string;
+        difficulty: number;
+    };
     template_mint: string;
     backed_tokens: [];
     burned_by_account: null;
