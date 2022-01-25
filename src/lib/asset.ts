@@ -33,6 +33,19 @@ export type AssetResponse = {
         issued_supply: string;
         created_at_time: string;
         created_at_block: string;
+        immutable_data: {
+            img: string;
+            ease: number;
+            luck: number;
+            name: string;
+            type: string;
+            delay: number;
+            shine: string;
+            cardid: number;
+            rarity: string;
+            backimg: string;
+            difficulty: number;
+        };
     };
     mutable_data: {};
     immutable_data: {

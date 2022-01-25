@@ -10,7 +10,7 @@ import { Container } from "./styles";
 const Navbar: React.FC = () => {
     let timer: NodeJS.Timeout;
     const { handleTheme, theme } = useTheme();
-    const { handleFilters } = useAssets();
+    const { handleFilters, loading } = useAssets();
     const themeStyled = useThemeStyled();
     const toogleValue = useMemo(() => theme === "dark", [theme]);
     const handleSearch = useCallback(
@@ -52,6 +52,7 @@ const Navbar: React.FC = () => {
                 <Toogle onClick={handleTheme} value={toogleValue} />
                 <Input
                     onChange={handleSearch}
+                    disabled={loading}
                     icon={
                         <Icon
                             name="search"

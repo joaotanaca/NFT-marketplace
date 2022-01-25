@@ -1,5 +1,11 @@
 import { AssetResponse, getAssetCards, getAssetCardsUrl } from "lib/asset";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import api from "services/api";
 
 export const sort: { [key: string]: string } = {
@@ -44,8 +50,28 @@ export const AssetsProvider: React.FC = ({ children }) => {
     const [schemas, setSchemas] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
 
+    const getAssets = useCallback(async () => {
+        try {
+            setAssets([]);
+            setLoading(true);
+            const {
+                data: { data },
+            } = await api.get(getAssetCardsUrl, {
+                params: {
+                    limit: 10,
+                    page: 1,
+                    ...filter,
+                },
+            });
+            setAssets(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [filter]);
+
     useEffect(() => {
-        setLoading(true);
         api.get("/schemas", {
             params: { collection_name: filter.collection_name },
         }).then(({ data: { data } }) => {
@@ -53,24 +79,11 @@ export const AssetsProvider: React.FC = ({ children }) => {
                 data?.map(({ schema_name }: any) => schema_name) || [];
             setSchemas(schemasMap);
         });
-        setLoading(false);
     }, [filter.collection_name]);
 
     useEffect(() => {
-        setLoading(true);
-        api.get(getAssetCardsUrl, {
-            params: {
-                limit: 10,
-                page: 1,
-                ...filter,
-            },
-        })
-            .then(({ data: { data } }) => {
-                setAssets(data);
-            })
-            .catch((err) => console.error(err));
-        setLoading(false);
-    }, [filter]);
+        getAssets();
+    }, [filter, getAssets]);
 
     useEffect(() => {
         setLoading(true);

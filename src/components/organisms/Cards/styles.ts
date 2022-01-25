@@ -5,4 +5,7 @@ export const Container = styled.div.attrs({
 })`
     background: ${({ theme }) => theme.primaryItems};
     border-radius: 10px;
+    .default-message {
+        color: ${({ theme }) => theme.text};
+    }
 `;

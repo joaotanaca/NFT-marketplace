@@ -1,8 +1,7 @@
 import { Icon, Text } from "components/atoms";
 import Cards from "organisms/Cards";
 import { useTheme } from "context/theme";
-import { useFetch } from "hooks/useSwr";
-import { AssetResponse, getAssetCards, getAssetCardsUrl } from "lib/asset";
+import { AssetResponse } from "lib/asset";
 import type { NextPage } from "next";
 import { useMemo } from "react";
 import { useTheme as useThemeStyled } from "styled-components";
@@ -18,19 +17,9 @@ type SelectType = SingleValue<{
 }>;
 
 const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
-    const { collections, filter, schemas, handleFilters } = useAssets();
+    const { collections, filter, schemas, loading, handleFilters, assets } =
+        useAssets();
 
-    const { data } = useFetch<{ data: AssetResponse[] }>(
-        getAssetCardsUrl,
-        {
-            params: {
-                limit: 10,
-                page: 1,
-                collection_name: filter.collection_name,
-            },
-        },
-        cards,
-    );
     const { theme } = useTheme();
     const themeStyled = useThemeStyled();
 
@@ -69,12 +58,12 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
         [filter.order, theme, themeStyled.purple, themeStyled.white],
     );
 
-    const assets = useMemo(() => {
-        return data?.data?.map((asset) => ({
+    const assetsRender = useMemo(() => {
+        return assets?.map((asset) => ({
             ...asset,
             price: Math.random().toPrecision(3),
         }));
-    }, [data]) as unknown as AssetResponse[];
+    }, [assets]) as unknown as AssetResponse[];
 
     const collectionOptions = useMemo(
         () => collections?.map((name) => ({ value: name, label: name })) || [],
@@ -137,6 +126,7 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                             ...collectionOptions,
                         ]}
                         onChange={handleCollections}
+                        isDisabled={loading}
                         isClearable
                     />
                     <Select
@@ -147,6 +137,7 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                             ...(!filter?.collection_name ? [] : schemasOptions),
                         ]}
                         onChange={handleSchemas}
+                        isDisabled={loading}
                         isClearable
                     />
                     <Select
@@ -157,11 +148,13 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                             ...sortOptions,
                         ]}
                         onChange={handleSort}
+                        isDisabled={loading}
                         isClearable
                     />
                     <ButtonOrder
                         onClick={handleOrder}
                         className={buttonSortClass}
+                        disabled={loading}
                     >
                         {filter.order ? (
                             iconsSort
@@ -174,17 +167,10 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                         )}
                     </ButtonOrder>
                 </div>
-                <Cards cards={assets ?? cards} />
+                <Cards cards={assetsRender} />
             </div>
         </>
     );
 };
-
-export async function getStaticProps() {
-    const cards = await getAssetCards();
-    return {
-        props: { cards }, // will be passed to the page component as props
-    };
-}
 
 export default Home;

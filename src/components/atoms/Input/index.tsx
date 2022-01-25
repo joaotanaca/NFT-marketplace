@@ -1,12 +1,19 @@
 import React, { HTMLAttributes } from "react";
 import { Container } from "./styles";
 
-type TProps = HTMLAttributes<HTMLInputElement> & { icon?: JSX.Element };
+type TProps = HTMLAttributes<HTMLInputElement> & {
+    icon?: JSX.Element;
+    disabled?: boolean;
+};
 
 const Input: React.FC<TProps> = ({ className = "", icon, ...props }) => {
     return (
         <Container className="relative">
-            {icon && <div className="absolute left-4 top-1/2 transform -translate-y-1/2">{icon}</div>}
+            {icon && (
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                    {icon}
+                </div>
+            )}
             <input
                 className={
                     icon
