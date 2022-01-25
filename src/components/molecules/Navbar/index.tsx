@@ -8,13 +8,18 @@ import { useTheme as useThemeStyled } from "styled-components";
 import { Container } from "./styles";
 
 const Navbar: React.FC = () => {
+    let timer: NodeJS.Timeout;
     const { handleTheme, theme } = useTheme();
     const { handleFilters } = useAssets();
     const themeStyled = useThemeStyled();
     const toogleValue = useMemo(() => theme === "dark", [theme]);
     const handleSearch = useCallback(
         (event: React.FormEvent<HTMLInputElement>) => {
-            handleFilters?.(event.currentTarget.value);
+            if (timer) clearTimeout(timer);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            timer = setTimeout(() => {
+                handleFilters?.({ match: (event?.target as any)?.value ?? "" });
+            }, 500);
         },
         [handleFilters],
     );

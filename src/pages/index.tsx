@@ -4,11 +4,13 @@ import { useTheme } from "context/theme";
 import { useFetch } from "hooks/useSwr";
 import { AssetResponse, getAssetCards, getAssetCardsUrl } from "lib/asset";
 import type { NextPage } from "next";
-import { ChangeEvent, useMemo } from "react";
+import { useMemo } from "react";
 import { useTheme as useThemeStyled } from "styled-components";
 import Head from "next/head";
-import { useAssets } from "context/assets";
+import { sort, useAssets } from "context/assets";
 import Select, { SingleValue } from "react-select";
+import { ButtonOrder } from "styles/pages";
+import { CgSortZa, CgSortAz } from "react-icons/cg";
 
 type SelectType = SingleValue<{
     value: string;
@@ -40,9 +42,31 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
         handleFilters?.({ schema_name: newValue?.value });
     };
 
+    const handleSort = (newValue: SelectType) => {
+        handleFilters?.({ sort: newValue?.value });
+    };
+
+    const handleOrder = () => {
+        switch (filter.order) {
+            case "":
+                handleFilters?.({ order: "asc" });
+                break;
+            case "asc":
+                handleFilters?.({ order: "desc" });
+                break;
+
+            default:
+                handleFilters?.({ order: "" });
+                break;
+        }
+    };
+
     const sortButtonColor = useMemo(
-        () => (theme !== "dark" ? themeStyled.purple : themeStyled.white),
-        [theme, themeStyled.purple, themeStyled.white],
+        () =>
+            theme !== "dark" && !filter.order
+                ? themeStyled.purple
+                : themeStyled.white,
+        [filter.order, theme, themeStyled.purple, themeStyled.white],
     );
 
     const assets = useMemo(() => {
@@ -62,6 +86,39 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
         [schemas],
     );
 
+    const sortOptions = useMemo(
+        () =>
+            Object.keys(sort)?.map((name) => ({
+                label: sort[name],
+                value: name,
+            })),
+        [],
+    );
+
+    const buttonSortClass = useMemo(() => {
+        switch (filter?.order) {
+            case "asc":
+                return "col-span-1 col-start-12 py-1 px-2 rounded-lg justify-self-end asc";
+            case "desc":
+                return "col-span-1 col-start-12 py-1 px-2 rounded-lg justify-self-end desc";
+            default:
+                return "col-span-1 col-start-12 py-2 px-3 rounded-lg justify-self-end";
+        }
+    }, [filter?.order]);
+
+    const sortButtons: { [key: string]: JSX.Element } = useMemo(
+        () => ({
+            asc: <CgSortZa color={sortButtonColor} size={24} />,
+            desc: <CgSortAz color={sortButtonColor} size={24} />,
+        }),
+        [sortButtonColor],
+    );
+
+    const iconsSort = useMemo(
+        () => sortButtons[filter.order],
+        [filter.order, sortButtons],
+    );
+
     return (
         <>
             <Head>
@@ -71,9 +128,9 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                 <Text className="font-normal text-2xl" color="lightText">
                     NFTs
                 </Text>
-                <div className="w-full mt-6 mb-4 flex gap-4">
+                <div className="w-full mt-6 mb-4 grid grid-cols-12 gap-4">
                     <Select
-                        className="w-full"
+                        className="w-full col-span-3"
                         placeholder="Selecione uma coleção"
                         options={[
                             { value: "", label: "Selecione uma coleção" },
@@ -83,18 +140,39 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                         isClearable
                     />
                     <Select
-                        className="w-full"
-                        placeholder="Selecione uma coleção"
+                        className="w-full col-span-3"
+                        placeholder="Selecione um esquema"
                         options={[
                             { value: "", label: "Selecione um esquema" },
-                            ...schemasOptions,
+                            ...(!filter?.collection_name ? [] : schemasOptions),
                         ]}
                         onChange={handleSchemas}
                         isClearable
                     />
-                    <button>
-                        <Icon name="grid" color={sortButtonColor} size={13.5} />
-                    </button>
+                    <Select
+                        className="w-full col-span-3"
+                        placeholder="Organizar por"
+                        options={[
+                            { value: "", label: "Organizar por" },
+                            ...sortOptions,
+                        ]}
+                        onChange={handleSort}
+                        isClearable
+                    />
+                    <ButtonOrder
+                        onClick={handleOrder}
+                        className={buttonSortClass}
+                    >
+                        {filter.order ? (
+                            iconsSort
+                        ) : (
+                            <Icon
+                                name="grid"
+                                color={sortButtonColor}
+                                size={13.5}
+                            />
+                        )}
+                    </ButtonOrder>
                 </div>
                 <Cards cards={assets ?? cards} />
             </div>
