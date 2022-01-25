@@ -1,4 +1,4 @@
-import { AssetResponse, getAssetCards, getAssetCardsUrl } from "lib/asset";
+import { AssetResponse, getAssetCardsUrl } from "lib/asset";
 import React, {
     createContext,
     useCallback,
@@ -22,8 +22,8 @@ type AssetsContextT = {
     schemas: string[];
     filter: { [key: string]: any };
     assets?: AssetResponse[];
-    search: string;
     loading: boolean;
+    pages: number;
     handleFilters?: (filter: any) => void;
 };
 
@@ -34,6 +34,7 @@ const AssetsContext = createContext({
     assets: null,
     search: "",
     loading: false,
+    pages: 0,
     handleFilters: () => {},
 } as unknown as AssetsContextT);
 
@@ -44,11 +45,13 @@ export const AssetsProvider: React.FC = ({ children }) => {
         order: "",
         sort: "",
         match: "",
+        page: 1,
     });
     const [assets, setAssets] = useState<AssetResponse[]>([]);
     const [collections, setCollections] = useState<string[]>([]);
     const [schemas, setSchemas] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+    const [pages, setPages] = useState(0);
 
     const getAssets = useCallback(async () => {
         try {
@@ -59,7 +62,6 @@ export const AssetsProvider: React.FC = ({ children }) => {
             } = await api.get(getAssetCardsUrl, {
                 params: {
                     limit: 10,
-                    page: 1,
                     ...filter,
                 },
             });
@@ -79,6 +81,16 @@ export const AssetsProvider: React.FC = ({ children }) => {
                 data?.map(({ schema_name }: any) => schema_name) || [];
             setSchemas(schemasMap);
         });
+        if (filter.collection_name) {
+            api.get(`/collections/${filter.collection_name}/stats`).then(
+                ({ data: { data } }) => {
+                    const pagesArround = Math.ceil(data?.assets / 10);
+                    setPages(pagesArround);
+                },
+            );
+        } else {
+            handleFilters?.({ page: 1 });
+        }
     }, [filter.collection_name]);
 
     useEffect(() => {
@@ -89,8 +101,7 @@ export const AssetsProvider: React.FC = ({ children }) => {
         setLoading(true);
         api.get("/collections").then(({ data: { data } }) => {
             const collections = data?.map(
-                ({ collection_name: name_collection }: any) =>
-                    name_collection || [],
+                ({ collection_name: name_collection }: any) => name_collection,
             );
             setCollections(collections);
         });
@@ -108,8 +119,8 @@ export const AssetsProvider: React.FC = ({ children }) => {
                 schemas,
                 assets,
                 filter,
-                search: "",
                 loading,
+                pages,
                 handleFilters,
             }}
         >

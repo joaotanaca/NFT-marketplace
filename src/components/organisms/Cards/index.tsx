@@ -6,12 +6,29 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Container } from "./styles";
 import { useAssets } from "context/assets";
 import { useTheme } from "styled-components";
+import { Text } from "components/atoms";
 
 type PropsT = { cards?: AssetResponse[] };
 
 const Cards: React.FC<PropsT> = ({ cards }) => {
-    const { loading } = useAssets();
+    const { loading, pages, filter, handleFilters } = useAssets();
     const theme = useTheme();
+
+    const renderPagination = useMemo(() => {
+        const pagination = [];
+        for (let index = 1; index <= pages; index++) {
+            pagination.push(
+                <Text
+                    key={index}
+                    className="cursor-pointer"
+                    onClick={() => handleFilters?.({ page: index })}
+                >
+                    {index}
+                </Text>,
+            );
+        }
+        return pagination;
+    }, [handleFilters, pages]);
     const renderCards = useMemo(
         () =>
             !cards?.length ? (
@@ -42,6 +59,11 @@ const Cards: React.FC<PropsT> = ({ cards }) => {
             ) : (
                 renderCards
             )}
+            {pages > 1 && filter.collection_name ? (
+                <div className="col-span-12 flex justify-center gap-4">
+                    {renderPagination}
+                </div>
+            ) : null}
         </Container>
     );
 };

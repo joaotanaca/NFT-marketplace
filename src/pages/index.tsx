@@ -17,8 +17,15 @@ type SelectType = SingleValue<{
 }>;
 
 const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
-    const { collections, filter, schemas, loading, handleFilters, assets } =
-        useAssets();
+    const {
+        collections,
+        filter,
+        schemas,
+        loading,
+        assets,
+        pages,
+        handleFilters,
+    } = useAssets();
 
     const { theme } = useTheme();
     const themeStyled = useThemeStyled();
