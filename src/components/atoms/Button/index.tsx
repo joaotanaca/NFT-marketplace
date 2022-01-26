@@ -4,7 +4,7 @@ import { ButtonComponent } from "./styles";
 
 const buttonTypes = {
     outline: "border px-3 py-1 rounded-full",
-    solid: "",
+    solid: "rounded-lg px-6 py-1 mt-8",
 };
 
 type PropsT = HTMLAttributes<HTMLButtonElement> & {
@@ -21,7 +21,11 @@ const Button: React.FC<PropsT> = ({
 }) => {
     const type = useMemo(() => buttonTypes[buttonType], [buttonType]);
     return (
-        <ButtonComponent className={`${className} ${type}`} {...props}>
+        <ButtonComponent
+            background={background}
+            className={`${className} ${type}`}
+            {...props}
+        >
             {children}
         </ButtonComponent>
     );

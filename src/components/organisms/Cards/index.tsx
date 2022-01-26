@@ -1,18 +1,28 @@
 import Card from "molecules/Card";
 import { AssetResponse } from "lib/asset";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
+import Image from "next/image";
 import { Container } from "./styles";
 import { useAssets } from "context/assets";
 import { useTheme } from "styled-components";
 import { Text } from "components/atoms";
+import Modal from "components/molecules/Modal";
 
 type PropsT = { cards?: AssetResponse[] };
 
 const Cards: React.FC<PropsT> = ({ cards }) => {
     const { loading, pages, filter, handleFilters } = useAssets();
     const theme = useTheme();
+    const [card, setCard] = useState<string | null>(null);
+
+    const handleShowModal = useCallback(
+        (card: AssetResponse) => setCard(card?.data?.img),
+        [],
+    );
+
+    const handleHiddenModal = useCallback(() => setCard(null), []);
 
     const renderPagination = useMemo(() => {
         const pagination = [];
@@ -38,13 +48,14 @@ const Cards: React.FC<PropsT> = ({ cards }) => {
             ) : (
                 cards?.map((card) => (
                     <Card
+                        onClick={() => handleShowModal(card)}
                         data={card}
                         className="2xl:col-span-2 col-span-3"
                         key={card.asset_id}
                     />
                 ))
             ),
-        [cards],
+        [cards, handleShowModal],
     );
     return (
         <Container>
@@ -63,6 +74,24 @@ const Cards: React.FC<PropsT> = ({ cards }) => {
                 <div className="col-span-12 flex justify-center gap-4">
                     {renderPagination}
                 </div>
+            ) : null}
+            {card ? (
+                <Modal secondButton={{ click: handleHiddenModal }}>
+                    <div className="w-full flex flex-col items-center gap-4">
+                        <Text className="font-bold text-2xl">
+                            Confirm purchase?
+                        </Text>
+                        <div className="w-full">
+                            <Image
+                                src={`https://ipfs.atomichub.io/ipfs/${card}`}
+                                alt="card-image"
+                                width={178}
+                                height={252}
+                                layout="responsive"
+                            />
+                        </div>
+                    </div>
+                </Modal>
             ) : null}
         </Container>
     );
