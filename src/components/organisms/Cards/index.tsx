@@ -3,12 +3,12 @@ import { AssetResponse } from "lib/asset";
 import React, { useCallback, useMemo, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-import Image from "next/image";
 import { Container } from "./styles";
 import { useAssets } from "context/assets";
 import { useTheme } from "styled-components";
 import { Text } from "components/atoms";
 import Modal from "components/molecules/Modal";
+import Image from "next/image";
 
 type PropsT = { cards?: AssetResponse[] };
 
@@ -50,7 +50,7 @@ const Cards: React.FC<PropsT> = ({ cards }) => {
                     <Card
                         onClick={() => handleShowModal(card)}
                         data={card}
-                        className="2xl:col-span-2 col-span-3"
+                        className="xl:col-span-2 col-span-3"
                         key={card.asset_id}
                     />
                 ))

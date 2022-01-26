@@ -9,12 +9,12 @@ import React, {
 import api from "services/api";
 
 export const sort: { [key: string]: string } = {
-    asset_id: "Id do card",
-    updated: "Atualizado",
-    name: "Nome",
-    transferred: "Transferido",
-    template_mint: "template_mint",
-    minted: "minted",
+    asset_id: "Asset Id",
+    updated: "Updated",
+    name: "Name",
+    transferred: "Transferred",
+    template_mint: "template Mint",
+    minted: "Minted",
 };
 
 type AssetsContextT = {

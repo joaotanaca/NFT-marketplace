@@ -127,9 +127,9 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                 <div className="w-full mt-6 mb-4 grid grid-cols-12 gap-4">
                     <Select
                         className="w-full col-span-3"
-                        placeholder="Selecione uma coleção"
+                        placeholder="Select a collection"
                         options={[
-                            { value: "", label: "Selecione uma coleção" },
+                            { value: "", label: "Select a collection" },
                             ...collectionOptions,
                         ]}
                         onChange={handleCollections}
@@ -138,9 +138,9 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                     />
                     <Select
                         className="w-full col-span-3"
-                        placeholder="Selecione um esquema"
+                        placeholder="Select a schema"
                         options={[
-                            { value: "", label: "Selecione um esquema" },
+                            { value: "", label: "Select a schema" },
                             ...(!filter?.collection_name ? [] : schemasOptions),
                         ]}
                         onChange={handleSchemas}
@@ -149,9 +149,9 @@ const Home: NextPage<{ cards: AssetResponse[] }> = ({ cards }) => {
                     />
                     <Select
                         className="w-full col-span-3"
-                        placeholder="Organizar por"
+                        placeholder="Sort by"
                         options={[
-                            { value: "", label: "Organizar por" },
+                            { value: "", label: "Sort by" },
                             ...sortOptions,
                         ]}
                         onChange={handleSort}
